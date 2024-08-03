@@ -11,7 +11,7 @@ public class AudioValidator
     private static readonly ILogger? Logger = LoggerSetup.Logger;
     private static readonly string ERROR_WHILE_READING_FILE_MESSAGE = "An error occurred while reading the file: ";
     private static readonly string ILLEGAL_ARGUMENT_MESSAGE = "The input value cannot be null.";
-    private static readonly IEnumerable<string> FILE_TYPES = ["mp3", "wav"];
+    private static readonly string[] FILE_TYPES = ["mp3", "wav"];
 
     /// <summary>
     /// Validates whether the provided file is a valid audio file.
@@ -20,7 +20,7 @@ public class AudioValidator
     /// <param name="exclude">An optional list of file types to be excluded from validation.</param>
     /// <returns>Returns <c>true</c> if the file is a valid audio and not in the exclusion list; otherwise, returns <c>false</c>.</returns>
     /// <exception cref="InvalidOperationException">Thrown when the provided file is null.</exception>
-    public static bool IsValidAudio(FileInfo file, IEnumerable<string>? exclude)
+    public static bool IsValidAudio(FileInfo file, params string[]? exclude)
     {
         if (file is null) throw new InvalidOperationException(ILLEGAL_ARGUMENT_MESSAGE);
 
@@ -30,8 +30,8 @@ public class AudioValidator
 
             if (exclude is null) return ValidateAllAudiosFileTypes(fileBytes);
 
-            IEnumerable<string> filteredList = exclude.Intersect(FILE_TYPES);
-            return filteredList is not null && filteredList.Any() && ValidateAllAudiosFileTypes(fileBytes, filteredList);
+            var filteredList = (string[]) exclude.Intersect(FILE_TYPES);
+            return filteredList.Length != 0 && ValidateAllAudiosFileTypes(fileBytes, filteredList);
         }
         catch (IOException exception)
         {
@@ -39,24 +39,14 @@ public class AudioValidator
             return false;
         }
     }
-
-    /// <summary>
-    /// Validates whether the provided file is a valid audio file.
-    /// </summary>
-    /// <param name="file">The file to be validated.</param>
-    /// <param name="exclude">An optional list of file types to be excluded from validation. Use a comma-separated list (e.g., "mp3", "wav").</param>
-    /// <returns>Returns <c>true</c> if the file is a valid audio and not in the exclusion list; otherwise, returns <c>false</c>.</returns>
-    /// <exception cref="InvalidOperationException">Thrown when the provided file is null.</exception>
-    /// <exception cref="IOException">Thrown when there is an I/O error reading the file.</exception>
-    public static bool IsValidAudio(FileInfo file, params string[]? exclude) => IsValidAudio(file, exclude?.AsEnumerable());
-
+    
     /// <summary>
     /// Validates the audio file types based on the filtered list.
     /// </summary>
     /// <param name="fileBytes">The bytes of the file to be validated.</param>
     /// <param name="filteredList">The filtered list of allowed file types.</param>
     /// <returns>Returns <c>true</c> if the file matches one of the allowed file types; otherwise, returns <c>false</c>.</returns>
-    private static bool ValidateAllAudiosFileTypes(byte[] fileBytes, IEnumerable<string> filteredList)
+    private static bool ValidateAllAudiosFileTypes(byte[] fileBytes, string[] filteredList)
     {
         bool isMp3Valid = filteredList.Contains("mp3") && IsMp3(fileBytes);
         bool isWavValid = filteredList.Contains("wav") && IsWav(fileBytes);
