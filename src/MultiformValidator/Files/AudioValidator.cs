@@ -20,7 +20,7 @@ public class AudioValidator
     /// <param name="exclude">An optional list of file types to be excluded from validation.</param>
     /// <returns>Returns <c>true</c> if the file is a valid audio and not in the exclusion list; otherwise, returns <c>false</c>.</returns>
     /// <exception cref="InvalidOperationException">Thrown when the provided file is null.</exception>
-    public static bool IsValidAudio(FileInfo file, params string[]? exclude)
+    public static bool IsValidAudio(FileInfo file, params string[] exclude)
     {
         if (file is null) throw new InvalidOperationException(ILLEGAL_ARGUMENT_MESSAGE);
 
@@ -28,9 +28,9 @@ public class AudioValidator
         {
             byte[] fileBytes = File.ReadAllBytes(file.FullName);
 
-            if (exclude is null) return ValidateAllAudiosFileTypes(fileBytes);
+            if (exclude.Length == 0) return ValidateAllAudiosFileTypes(fileBytes);
 
-            var filteredList = (string[]) exclude.Intersect(FILE_TYPES);
+            var filteredList = FILE_TYPES.Except(exclude).ToArray();
             return filteredList.Length != 0 && ValidateAllAudiosFileTypes(fileBytes, filteredList);
         }
         catch (IOException exception)
