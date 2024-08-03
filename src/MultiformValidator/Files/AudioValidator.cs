@@ -47,25 +47,7 @@ public class AudioValidator
     /// <returns>Returns <c>true</c> if the file is a valid audio and not in the exclusion list; otherwise, returns <c>false</c>.</returns>
     /// <exception cref="InvalidOperationException">Thrown when the provided file is null.</exception>
     /// <exception cref="IOException">Thrown when there is an I/O error reading the file.</exception>
-    public static bool IsValidAudio(FileInfo file, params string[]? exclude)
-    {
-        if (file is null) throw new InvalidOperationException(ILLEGAL_ARGUMENT_MESSAGE);
-
-        try
-        {
-            byte[] fileBytes = File.ReadAllBytes(file.FullName);
-
-            if (exclude is null) return ValidateAllAudiosFileTypes(fileBytes);
-
-            IEnumerable<string> filteredList = exclude.Intersect(FILE_TYPES);
-            return filteredList is not null && filteredList.Any() && ValidateAllAudiosFileTypes(fileBytes, filteredList);
-        }
-        catch (IOException exception)
-        {
-            Logger?.LogError($"{ILLEGAL_ARGUMENT_MESSAGE} {exception.Message}");
-            return false;
-        }
-    }
+    public static bool IsValidAudio(FileInfo file, params string[]? exclude) => IsValidAudio(file, exclude);
 
     /// <summary>
     /// Validates the audio file types based on the filtered list.
