@@ -9,6 +9,7 @@ namespace MultiformValidator.Files;
 public class AudioValidator
 {
     private static readonly ILogger? Logger = LoggerSetup.Logger;
+    private static readonly string ERROR_WHILE_READING_FILE_MESSAGE = "An error occurred while reading the file: ";
     private static readonly string ILLEGAL_ARGUMENT_MESSAGE = "The input value cannot be null.";
     private static readonly IEnumerable<string> FILE_TYPES = ["mp3", "wav"];
 
@@ -34,7 +35,7 @@ public class AudioValidator
         }
         catch (IOException exception)
         {
-            Logger?.LogError($"{ILLEGAL_ARGUMENT_MESSAGE} {exception.Message}");
+            Logger?.LogError($"{ERROR_WHILE_READING_FILE_MESSAGE} {exception.Message}");
             return false;
         }
     }
