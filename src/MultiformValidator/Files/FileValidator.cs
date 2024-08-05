@@ -18,6 +18,8 @@ public static class FileValidator
     /// </returns>
     public static bool IsValidPdf(FileInfo file)
     {
+        if (file is null) throw new InvalidOperationException(ILLEGAL_ARGUMENT_MESSAGE);
+
         try
         {
             byte[] fileBytes = File.ReadAllBytes(file.FullName);
@@ -47,6 +49,8 @@ public static class FileValidator
     /// </returns>
     public static bool IsValidTxt(FileInfo file)
     {
+        if (file is null) throw new InvalidOperationException(ILLEGAL_ARGUMENT_MESSAGE);
+
         try
         {
             byte[] fileBytes = File.ReadAllBytes(file.FullName);
