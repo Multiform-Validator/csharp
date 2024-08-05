@@ -1,11 +1,7 @@
 using Microsoft.Extensions.Logging;
-using Microsoft.VisualBasic;
 
 namespace MultiformValidator.Files;
 
-/// <summary>
-/// Validates audio files by checking if they are of type MP3 or WAV.
-/// </summary>
 public class AudioValidator
 {
     private static readonly ILogger? Logger = LoggerSetup.Logger;
@@ -54,31 +50,16 @@ public class AudioValidator
         return isMp3Valid || isWavValid;
     }
 
-    /// <summary>
-    /// Validates the audio file types.
-    /// </summary>
-    /// <param name="fileByte">The bytes of the file to be validated.</param>
-    /// <returns>Returns <c>true</c> if the file matches one of the valid audio types; otherwise, returns <c>false</c>.</returns>
     private static bool ValidateAllAudiosFileTypes(byte[] fileByte)
     {
         return IsMp3(fileByte) || IsWav(fileByte);
     }
 
-    /// <summary>
-    /// Checks if the file bytes correspond to the MP3 format.
-    /// </summary>
-    /// <param name="fileBytes">The bytes of the file to be checked.</param>
-    /// <returns>Returns <c>true</c> if the bytes correspond to the MP3 format; otherwise, returns <c>false</c>.</returns>
     private static bool IsMp3(byte[] fileBytes)
     {
         return fileBytes[0] == 0x49 && fileBytes[1] == 0x44 && fileBytes[2] == 0x33;
     }
 
-    /// <summary>
-    /// Checks if the file bytes correspond to the WAV format.
-    /// </summary>
-    /// <param name="fileBytes">The bytes of the file to be checked.</param>
-    /// <returns>Returns <c>true</c> if the bytes correspond to the WAV format; otherwise, returns <c>false</c>.</returns>
     private static bool IsWav(byte[] fileBytes)
     {
         return fileBytes[0] == 0x52
