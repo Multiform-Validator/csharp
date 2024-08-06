@@ -36,12 +36,7 @@ public class AudioValidator
         }
     }
     
-    /// <summary>
-    /// Validates the audio file types based on the filtered list.
-    /// </summary>
-    /// <param name="fileBytes">The bytes of the file to be validated.</param>
-    /// <param name="filteredList">The filtered list of allowed file types.</param>
-    /// <returns>Returns <c>true</c> if the file matches one of the allowed file types; otherwise, returns <c>false</c>.</returns>
+    #region [private methods]
     private static bool ValidateAllAudiosFileTypes(byte[] fileBytes, string[] filteredList)
     {
         bool isMp3Valid = filteredList.Contains("mp3") && IsMp3(fileBytes);
@@ -67,4 +62,6 @@ public class AudioValidator
             && fileBytes[2] == 0x46
             && fileBytes[3] == 0x46;
     }
+
+    #endregion
 }
