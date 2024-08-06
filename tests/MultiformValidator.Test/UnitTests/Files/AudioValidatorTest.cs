@@ -6,14 +6,7 @@ namespace MultiformValidator.Test.UnitTests.Files;
 
 public class AudioValidatorTests
 {
-    private readonly Mock<ILogger> _mockLogger;
     private readonly string _basePath =  Directory.GetParent(Directory.GetCurrentDirectory())!.Parent!.Parent!.FullName;
-
-    public AudioValidatorTests()
-    {
-        _mockLogger = new Mock<ILogger>();
-        LoggerSetup.ConfigureLogger(_mockLogger.Object);
-    }
 
     [Fact]
     public void IsValidAudio_FileIsNull_ThrowsInvalidOperationException()
