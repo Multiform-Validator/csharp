@@ -7,6 +7,7 @@ public static class FileValidator
     private static readonly ILogger? Logger = LoggerSetup.Logger;
     private static readonly string ERROR_WHILE_READING_FILE_MESSAGE = "An error occurred while reading the file: ";
     private static readonly string ILLEGAL_ARGUMENT_MESSAGE = "The input value cannot be null.";
+    private static readonly string[] FILE_TYPES = ["txt", "pdf"];
 
 
     /// <summary>
@@ -16,14 +17,18 @@ public static class FileValidator
     /// <returns>
     /// <c>true</c> if the file is a valid PDF; otherwise, <c>false</c>.
     /// </returns>
-    public static bool IsValidPdf(FileInfo file)
+    public static bool IsValidFile(FileInfo file, params string[] exclude)
     {
-        if (file is null) throw new InvalidOperationException(ILLEGAL_ARGUMENT_MESSAGE);
+        if (file == null) throw new InvalidOperationException(ILLEGAL_ARGUMENT_MESSAGE);
 
         try
         {
             byte[] fileBytes = File.ReadAllBytes(file.FullName);
-            return IsPdf(fileBytes);
+
+            if (exclude.Length == 0) return ValidateAllFileTypes(fileBytes);
+
+            var filteredList = FILE_TYPES.Except(exclude).ToArray();
+            return filteredList.Length != 0 && ValidateAllFileTypes(fileBytes, filteredList);
         }
         catch (IOException exception)
         {
@@ -32,36 +37,21 @@ public static class FileValidator
         }
     }
 
-    private static bool IsPdf(byte[] fileBytes)
+    #region [private methods]
+
+    private static bool ValidateAllFileTypes(byte[] fileBytes)
     {
-        return fileBytes[0] == 0x25
-            && fileBytes[1] == 0x50
-            && fileBytes[2] == 0x44
-            && fileBytes[3] == 0x46;
+        return IsPdf(fileBytes) || IsTxt(fileBytes);
     }
 
-    /// <summary>
-    /// Validates whether the specified file is a valid text file.
-    /// </summary>
-    /// <param name="file">The file to be validated.</param>
-    /// <returns>
-    /// <c>true</c> if the file is a valid text file; otherwise, <c>false</c>.
-    /// </returns>
-    public static bool IsValidTxt(FileInfo file)
+    private static bool ValidateAllFileTypes(byte[] fileBytes, string[] filteredList)
     {
-        if (file is null) throw new InvalidOperationException(ILLEGAL_ARGUMENT_MESSAGE);
+        var isTxt = filteredList.Contains("txt") && IsTxt(fileBytes);
+        var isPdf = filteredList.Contains("pdf") && IsPdf(fileBytes);
 
-        try
-        {
-            byte[] fileBytes = File.ReadAllBytes(file.FullName);
-            return IsTxt(fileBytes);
-        }
-        catch (IOException exception)
-        {
-            Logger?.LogError($"{ERROR_WHILE_READING_FILE_MESSAGE} {exception.Message}");
-            return false;
-        }
+        return isTxt || isPdf;
     }
+
 
     private static bool IsTxt(byte[] fileBytes)
     {
@@ -73,4 +63,14 @@ public static class FileValidator
 
         return true;
     }
+
+    private static bool IsPdf(byte[] fileBytes)
+    {
+        return fileBytes[0] == 0x25
+            && fileBytes[1] == 0x50
+            && fileBytes[2] == 0x44
+            && fileBytes[3] == 0x46;
+    }
+
+    #endregion
 }
