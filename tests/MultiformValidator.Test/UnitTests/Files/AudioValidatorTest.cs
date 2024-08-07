@@ -1,5 +1,3 @@
-using Microsoft.Extensions.Logging;
-using Moq;
 using MultiformValidator.Files;
 
 namespace MultiformValidator.Test.UnitTests.Files;
@@ -26,7 +24,7 @@ public class AudioValidatorTests
     [Fact]
     public void IsValidAudio_ValidMp3File_ReturnsTrue()
     {
-        var mp3File = new FileInfo(Path.Combine(_basePath, "Assets/Valid/valid.mp3"));
+        var mp3File = new FileInfo(Path.Combine(_basePath, "Assets/AudioValidator/Valid/valid.mp3"));
         bool result = AudioValidator.IsValidAudio(mp3File);
 
         Assert.True(result);
@@ -35,7 +33,7 @@ public class AudioValidatorTests
     [Fact]
     public void IsValidAudio_ValidWavFile_ReturnsTrue()
     {
-        var wavFile = new FileInfo(Path.Combine(_basePath, "Assets/Valid/valid.wav"));
+        var wavFile = new FileInfo(Path.Combine(_basePath, "Assets/AudioValidator/Valid/valid.wav"));
         bool result = AudioValidator.IsValidAudio(wavFile);
         
         Assert.True(result);
@@ -44,7 +42,7 @@ public class AudioValidatorTests
     [Fact]
     public void IsValidAudio_FileTypeExcluded_ReturnsTrue()
     {
-        var mp3File = new FileInfo(Path.Combine(_basePath, "Assets/Valid/valid.mp3"));
+        var mp3File = new FileInfo(Path.Combine(_basePath, "Assets/AudioValidator/Valid/valid.mp3"));
         bool result = AudioValidator.IsValidAudio(mp3File, ["mp3"]);
 
         Assert.False(result);
@@ -53,7 +51,7 @@ public class AudioValidatorTests
     [Fact]
     public void IsValidAudio_NoExcludedTypes_ReturnsTrue()
     {
-        var wavFile = new FileInfo(Path.Combine(_basePath, "Assets/Valid/valid.wav"));
+        var wavFile = new FileInfo(Path.Combine(_basePath, "Assets/AudioValidator/Valid/valid.wav"));
         bool result = AudioValidator.IsValidAudio(wavFile, ["mp3"]);
         Assert.True(result);
     }
@@ -61,7 +59,7 @@ public class AudioValidatorTests
     [Fact]
     public void IsInValidAudioWav_NoExcludedTypes_ReturnsFalse()
     {
-        var wavFile = new FileInfo(Path.Combine(_basePath, "Assets/Invalid/invalid.wav"));
+        var wavFile = new FileInfo(Path.Combine(_basePath, "Assets/AudioValidator/nvalid/invalid.wav"));
         bool result = AudioValidator.IsValidAudio(wavFile);
         Assert.False(result);
     }
@@ -69,7 +67,7 @@ public class AudioValidatorTests
     [Fact]
     public void IsInValidAudioMp3_NoExcludedTypes_ReturnsFalse()
     {
-        var wavFile = new FileInfo(Path.Combine(_basePath, "Assets/Invalid/invalid.mp3"));
+        var wavFile = new FileInfo(Path.Combine(_basePath, "Assets/AudioValidator/Invalid/invalid.mp3"));
         bool result = AudioValidator.IsValidAudio(wavFile);
         Assert.False(result);
     }
